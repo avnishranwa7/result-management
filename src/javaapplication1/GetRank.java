@@ -120,7 +120,6 @@ public class GetRank extends javax.swing.JFrame {
             if(rank.equals("")){
                 throw new Exception("No result for this name");
             }
-            System.out.println(rank);
             jLabel3.setText("Rank: "+rank);
             
             
