@@ -5,19 +5,19 @@
 package javaapplication1;
 
 import static javaapplication1.Main.createConnection;
-import java.sql.*;
 import javax.swing.JOptionPane;
+import java.sql.*;
 
 /**
  *
  * @author AvnishRanwa
  */
-public class GetRank extends javax.swing.JFrame {
+public class DeleteRecord extends javax.swing.JFrame {
 
     /**
-     * Creates new form GetRank
+     * Creates new form DeleteRecord
      */
-    public GetRank() {
+    public DeleteRecord() {
         initComponents();
     }
 
@@ -31,63 +31,53 @@ public class GetRank extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Your Rank");
+        jLabel1.setText("Delete Record");
 
         jLabel2.setText("Name");
 
-        jButton1.setText("Get Rank");
+        jButton1.setText("Delete");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jLabel3.setText("Rank: ");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(135, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(170, 170, 170))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(127, 127, 127)
                         .addComponent(jLabel2)
-                        .addGap(43, 43, 43)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(70, 70, 70))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGap(53, 53, 53)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(166, 166, 166)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton1)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addComponent(jLabel3)))
-                        .addGap(156, 156, 156))))
+                            .addComponent(jLabel1))))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(46, 46, 46)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(37, 37, 37)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(jButton1)
-                .addGap(38, 38, 38)
-                .addComponent(jLabel3)
-                .addContainerGap(96, Short.MAX_VALUE))
+                .addGap(30, 30, 30))
         );
 
         pack();
@@ -95,43 +85,34 @@ public class GetRank extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        try{
-            
-            if(jTextField1.getText().equals("")){
-                throw new Exception("Name cannot be empty");
+        if(jTextField1.getText().equals("")){
+            JOptionPane.showMessageDialog(rootPane, "Name field is required to delete the record.");
+        }else{
+            try{
+                String name = jTextField1.getText();
+                Connection conn = createConnection();
+                
+                String sql = "Delete from Sat_Score where name = ?";
+                PreparedStatement ptsmt = conn.prepareStatement(sql);
+                ptsmt.setString(1, name);
+                        
+                int rowsAffected = ptsmt.executeUpdate();
+                if(rowsAffected==0){
+                    throw new Exception("No such name exists");
+                }
+                        
+                jTextField1.setText("");        
+                JOptionPane.showMessageDialog(rootPane, "Record deleted Successfully");
+                
+            }catch(SQLException e){
+                System.out.println(e.getMessage());
+            }catch(Exception e){
+                if(e.getMessage().equals("No such name exists")){
+                    JOptionPane.showMessageDialog(null, "No such name exists");
+                }
             }
             
-            Connection conn = createConnection();
-            
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT name, score, FIND_IN_SET( score, (    \n" +
-                                                "SELECT GROUP_CONCAT( score\n" +
-                                                "ORDER BY score DESC ) \n" +
-                                                "FROM sat_score )\n" +
-                                                ") AS r\n" +
-                                                "FROM sat_score\n" +
-                                                "WHERE name =  '" + jTextField1.getText() + "'");
-            
-            String rank = "";
-            while(rs.next()){
-                rank = rs.getString(3);
-            }
-            
-            if(rank.equals("")){
-                throw new Exception("No result for this name");
-            }
-            jLabel3.setText("Rank: "+rank);
-            
-            
-        }catch(SQLException e){
-            jLabel3.setText("Rank: ");
-            System.out.println(e.getMessage());
-        }catch(Exception e){
-            jLabel3.setText("Rank: ");
-            JOptionPane.showMessageDialog(null, e.getMessage());
         }
-        
-        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -151,20 +132,20 @@ public class GetRank extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GetRank.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteRecord.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GetRank.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteRecord.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GetRank.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteRecord.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GetRank.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteRecord.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GetRank().setVisible(true);
+                new DeleteRecord().setVisible(true);
             }
         });
     }
@@ -173,7 +154,6 @@ public class GetRank extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

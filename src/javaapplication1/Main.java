@@ -18,6 +18,8 @@ public class Main extends javax.swing.JFrame {
     InsertData insertForm = new InsertData();
     GetRank getRank = new GetRank();
     ViewData viewData = new ViewData();
+    UpdateScore updateScore = new UpdateScore();
+    DeleteRecord deleteRecord = new DeleteRecord();
     
     /**
      * Creates new form NewJFrame
@@ -68,8 +70,18 @@ public class Main extends javax.swing.JFrame {
         });
 
         jButton4.setText("Update Score");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Delete Record");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -127,6 +139,18 @@ public class Main extends javax.swing.JFrame {
         getRank.setVisible(true);
         getRank.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        updateScore.setVisible(true);
+        updateScore.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        deleteRecord.setVisible(true);
+        deleteRecord.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     
     
